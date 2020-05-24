@@ -12,8 +12,16 @@ public class UserService {
 
     }
 
-    public User findUser(int id) {
+    public User findUserById(int id) {
         return usersDao.findById(id);
+    }
+
+    public User findUserByLogin(String login) {
+        return usersDao.findByLogin(login);
+    }
+
+    public User findUserByPasswordAndLogin(String password, String login) {
+        return usersDao.findByPasswordAndLogin(password, login);
     }
 
     public void saveUser(User user) {

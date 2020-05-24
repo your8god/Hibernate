@@ -14,6 +14,26 @@ public class UserDAOImpl implements UserDAO{
     }
 
     @Override
+    public User findByLogin(String login) {
+        List<User> users = findAll();
+        for (User user : users) {
+            if (user.getLogin().equals(login))
+                return user;
+        }
+        return null;
+    }
+
+    @Override
+    public User findByPasswordAndLogin(String password, String login) {
+        List<User> users = findAll();
+        for (User user : users) {
+            if (user.getPassword().equals(password) && user.getLogin().equals(login))
+                return user;
+        }
+        return null;
+    }
+
+    @Override
     public void save(User user) {
         Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
         Transaction tx1 = session.beginTransaction();
@@ -42,7 +62,7 @@ public class UserDAOImpl implements UserDAO{
 
     @Override
     public List<User> findAll() {
-        List<User> users = (List<User>)HibernateSessionFactoryUtil.getSessionFactory().openSession();
+        List<User> users = (List<User>)HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("From User").list();
         return users;
     }
 }
