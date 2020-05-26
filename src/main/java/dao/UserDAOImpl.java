@@ -3,7 +3,9 @@ package dao;
 import models.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import utils.HibernateSessionFactoryUtil;
+
 import java.util.List;
 
 public class UserDAOImpl implements UserDAO{
@@ -15,22 +17,23 @@ public class UserDAOImpl implements UserDAO{
 
     @Override
     public User findByLogin(String login) {
-        List<User> users = findAll();
-        for (User user : users) {
-            if (user.getLogin().equals(login))
-                return user;
-        }
-        return null;
+        Query query = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("From User where login =:param");
+        query.setParameter("param", login);
+        List<User> users = (List<User>)query.list();
+        if (users.isEmpty())
+            return null;
+        return users.get(0);
     }
 
     @Override
     public User findByPasswordAndLogin(String password, String login) {
-        List<User> users = findAll();
-        for (User user : users) {
-            if (user.getPassword().equals(password) && user.getLogin().equals(login))
-                return user;
-        }
-        return null;
+        Query query = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("From User where login =:log AND password =:pass");
+        query.setParameter("log", login);
+        query.setParameter("pass", password);
+        List<User> users = (List<User>)query.list();
+        if (users.isEmpty())
+            return null;
+        return users.get(0);
     }
 
     @Override

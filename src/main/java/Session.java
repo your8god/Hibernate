@@ -1,18 +1,22 @@
+import models.Driver;
 import models.User;
+import services.DriverService;
 import services.UserService;
 import java.util.Scanner;
 
-
 public class Session {
-    User user;
-    UserService userService = new UserService();
+    private User user;
+    private UserService userService = new UserService();
+    private DriverService driverService = new DriverService();
 
     public Session(User user) {
         this.user = user;
     }
 
     public void run() {
-        System.out.print("Меню:\n1 - Изменить свое имя;\n2 - Удалить аккаунт;\n\n\n0 - Выход;\nКоманда: ");
+        System.out.print("Меню:\n1 - Изменить свое имя;\n2 - Удалить аккаунт;\n3 - Добавить водителя\n4 - Удалить водителя" +
+                "\n5 - Найти водителя\n6 - Переименовать водителя\n7 - Добавить авто" +
+                "\n8 - Удалить авто\n9 - Найти авто\n0 - Выход;\nКоманда: ");
 
         try {
             Scanner in = new Scanner(System.in);
@@ -27,6 +31,18 @@ public class Session {
                 case 2:
                     deleteUser();
                     break;
+                case 3:
+                    addDriver();
+                    break;
+                case 4:
+                    removeDriver();
+                    break;
+                case 5:
+                    findDriver();
+                    break;
+                case 6:
+                    renameDriver();
+                    break;
                 case 0:
                     return;
                 default:
@@ -39,7 +55,7 @@ public class Session {
         run();
     }
 
-    void renameUser() {
+    private void renameUser() {
         System.out.print("Введите новое имя: ");
         Scanner in = new Scanner(System.in);
         String newName = in.nextLine();
@@ -48,7 +64,7 @@ public class Session {
         System.out.println("Операция прошла успешно!");
     }
 
-    void deleteUser() {
+    private void deleteUser() {
         System.out.print("Вы действительно хотите удалить свой аккаунт? 1 - Да; 2 - Нет: ");
         try {
             Scanner in = new Scanner(System.in);
@@ -69,6 +85,139 @@ public class Session {
         catch (ExceptionDB e) {
             System.out.println(e.getMessage());
             deleteUser();
+        }
+        System.out.println("Операция прошла успешно!");
+    }
+
+    private void addDriver() {
+        Scanner in = new Scanner(System.in);
+        System.out.print("Введите имя: ");
+        String name = in.nextLine();
+        System.out.print("Введите возраст: ");
+        String age = in.nextLine();
+        System.out.print("Введите стаж: ");
+        String experience = in.nextLine();
+
+        try {
+            if (!age.matches("-?\\d+(\\.\\d+)?") || !experience.matches("-?\\d+(\\.\\d+)?"))
+                throw new ExceptionDB("Неверный ввод! Попробуйте снова");
+            Driver driver = new Driver(name, Integer.parseInt(age), Integer.parseInt(experience));
+            driverService.saveDriver(driver);
+        }
+        catch (ExceptionDB e) {
+            System.out.println(e.getMessage());
+            addDriver();
+        }
+        System.out.println("Операция прошла успешно!");
+    }
+
+    private void removeDriver() {
+        Scanner in = new Scanner(System.in);
+        System.out.print("Введите id водителя, которого хотите удалить: ");
+        String s_id = in.nextLine();
+
+        try {
+            if (!s_id.matches("-?\\d+(\\.\\d+)?"))
+                throw new ExceptionDB("Неверный ввод! Попробуйте снова");
+
+            int id = Integer.parseInt(s_id);
+            Driver driver = driverService.findDriverById(id);
+            if (driver == null)
+                throw new ExceptionDB("Не существует водителя с данный id! Попробуйте снова");
+
+            System.out.print("Вы действительно хотите удалить водителя с id = " + id + "? 1 - Да; 2 - Нет: ");
+            String command = in.nextLine();
+            if (!command.matches("-?\\d+(\\.\\d+)?"))
+                throw new ExceptionDB("Неверная комманда! Попробуйте снова.");
+
+            switch (Integer.parseInt(command)) {
+                case 1:
+                    driverService.deleteDriver(driver);
+                    break;
+                case 2:
+                    return;
+                default:
+                    throw new ExceptionDB("Неверная комманда! Попробуйте снова.");
+            }
+        }
+        catch (ExceptionDB e) {
+            System.out.println(e.getMessage());
+            removeDriver();
+        }
+        System.out.println("Операция прошла успешно!");
+    }
+
+    private void findDriver() {
+        System.out.print("Найти водителя(-ей) по ? 1 - id; 2 - имени: ");
+        try {
+            Scanner in = new Scanner(System.in);
+            String command = in.nextLine();
+            if (!command.matches("-?\\d+(\\.\\d+)?"))
+                throw new ExceptionDB("Неверная комманда! Попробуйте снова.");
+
+            switch (Integer.parseInt(command)) {
+                case 1:
+                    findDriverById();
+                    break;
+                case 2:
+                    findDriversByName();
+                    return;
+                default:
+                    throw new ExceptionDB("Неверная комманда! Попробуйте снова.");
+            }
+        }
+        catch (ExceptionDB e) {
+            System.out.println(e.getMessage());
+            findDriver();
+        }
+        System.out.println("Операция прошла успешно!");
+    }
+
+    private void findDriverById() {
+
+    }
+
+    private void findDriversByName() {
+
+    }
+
+    private void renameDriver() {
+        Scanner in = new Scanner(System.in);
+        System.out.print("Введите id водителя, которого хотите переименовать: ");
+        String s_id = in.nextLine();
+
+        try {
+            if (!s_id.matches("-?\\d+(\\.\\d+)?"))
+                throw new ExceptionDB("Неверный ввод! Попробуйте снова");
+
+            int id = Integer.parseInt(s_id);
+            Driver driver = driverService.findDriverById(id);
+            if (driver == null)
+                throw new ExceptionDB("Не существует водителя с данный id! Попробуйте снова");
+
+            System.out.print("Введите новое имя: ");
+            String newName = in.nextLine();
+
+            System.out.print("Вы действительно хотите переименовать водителя с " + driver.getName() + " на " +
+                    newName + "? 1 - Да; 2 - Нет: ");
+            String command = in.nextLine();
+            if (!command.matches("-?\\d+(\\.\\d+)?"))
+                throw new ExceptionDB("Неверная комманда! Попробуйте снова.");
+
+            switch (Integer.parseInt(command)) {
+                case 1:
+                    driver.setName(newName);
+                    driverService.updateDriver(driver);
+                    break;
+                case 2:
+                    return;
+                default:
+                    throw new ExceptionDB("Неверная комманда! Попробуйте снова.");
+            }
+        }
+        catch (ExceptionDB e) {
+            System.out.println(e.getMessage());
+            removeDriver();
         }
         System.out.println("Операция прошла успешно!");
     }
