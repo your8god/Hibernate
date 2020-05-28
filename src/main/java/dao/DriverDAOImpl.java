@@ -17,11 +17,6 @@ public class DriverDAOImpl implements DriverDAO{
     public Driver findById(int id) {
         openSession();
         return session.get(Driver.class, id);
-        //Transaction tx1 = session.beginTransaction();
-        //Driver driver = session.get(Driver.class, id);
-        //tx1.commit();
-        //session.close();
-        //return driver;
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class Session {
     private User user;
@@ -116,6 +117,9 @@ public class Session {
         try {
             if (!age.matches("-?\\d+(\\.\\d+)?") || !experience.matches("-?\\d+(\\.\\d+)?"))
                 throw new ExceptionDB("Неверный ввод! Попробуйте снова");
+            if (Stream.of(age, experience, name).anyMatch(""::equals))
+                throw new ExceptionDB("Заполнены не все обязательные поля!");
+
             Driver driver = new Driver(name, Integer.parseInt(age), Integer.parseInt(experience));
             driverService.saveDriver(driver);
         }
@@ -303,11 +307,14 @@ public class Session {
             if (!driverId.matches("-?\\d+(\\.\\d+)?"))
                 throw new ExceptionDB("Неверный ввод! Попробуйте снова.");
 
+            if (Stream.of(model, color, driverId).anyMatch(""::equals))
+                throw new ExceptionDB("Заполнены не все обязательные поля!");
+
             int id = Integer.parseInt(driverId);
-            Auto auto = new Auto(model, color);
             Driver driver = driverService.findDriverById(id);
             if (driver == null)
                 throw new ExceptionDB("Водителя с таким id не существует! Попробуйте снова.");
+            Auto auto = new Auto(model, color);
             auto.setDriver(driver);
             driver.addAuto(auto);
             driverService.closeSessionAfterFind();

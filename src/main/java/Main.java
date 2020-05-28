@@ -2,6 +2,7 @@ import models.User;
 import services.UserService;
 import java.sql.SQLException;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
@@ -81,7 +82,10 @@ public class Main {
             if (!age.isEmpty() && !age.matches("-?\\d+(\\.\\d+)?"))//проверка на число
                 throw new ExceptionDB("Неверный ввод! В поле возраста должно находиться число!");
 
-            if (login.isEmpty() || password.isEmpty() || name.isEmpty())
+            //if (login.isEmpty() || password.isEmpty() || name.isEmpty())
+                //throw new ExceptionDB("Заполнены не все обязательные поля!");
+
+            if (Stream.of(login, password, name).anyMatch(""::equals))
                 throw new ExceptionDB("Заполнены не все обязательные поля!");
 
             if (userService.findUserByLogin(login) != null)
