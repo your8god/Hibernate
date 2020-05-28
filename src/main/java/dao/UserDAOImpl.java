@@ -11,11 +11,6 @@ import java.util.List;
 public class UserDAOImpl implements UserDAO{
 
     @Override
-    public User findById(int id) {
-        return HibernateSessionFactoryUtil.getSessionFactory().openSession().get(User.class, id);
-    }
-
-    @Override
     public User findByLogin(String login) {
         Query query = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("From User where login =:param");
         query.setParameter("param", login);
@@ -61,11 +56,5 @@ public class UserDAOImpl implements UserDAO{
         session.delete(user);
         tx1.commit();
         session.close();
-    }
-
-    @Override
-    public List<User> findAll() {
-        List<User> users = (List<User>)HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("From User").list();
-        return users;
     }
 }

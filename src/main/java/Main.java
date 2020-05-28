@@ -6,11 +6,13 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws SQLException {
         Main main = new Main();
-        main.run();
+        while (true) {
+            main.run();
+        }
     }
 
     private void run() {
-        System.out.print("Введите 1 для входа; \nВведите 2 для регистрации; \nКОМАНДА: ");
+        System.out.print("Введите 1 для входа \nВведите 2 для регистрации \nКОМАНДА: ");
         try {
             Scanner in = new Scanner(System.in);
             String command = in.nextLine();
@@ -84,6 +86,9 @@ public class Main {
 
             if (userService.findUserByLogin(login) != null)
                 throw new ExceptionDB("Пользователь с таким логином уже есть! Используйте другой.");
+
+            if (age.isEmpty())
+                age = "0";
 
             user.setName(name);
             user.setPassword(String.valueOf(password.hashCode()));

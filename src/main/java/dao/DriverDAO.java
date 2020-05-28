@@ -18,5 +18,7 @@ public interface DriverDAO {
 
     List<Driver> findAll();
 
+    List<Auto> findAllAuto();
+
     List<Driver> findByName(String name);
 }

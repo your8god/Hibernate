@@ -1,5 +1,8 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,18 +13,23 @@ public class Driver {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("Id")
     private int id;
 
     @Column(name = "name")
+    @JsonProperty("Name")
     private String name;
 
     @Column(name = "age")
+    @JsonProperty("Age")
     private int age;
 
     @Column(name = "experience")
+    @JsonProperty("Experience")
     private int experience;
 
     @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty("Autos")
     private List<Auto> autos;
 
     public Driver() {

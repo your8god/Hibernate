@@ -11,14 +11,17 @@ import java.util.List;
 
 public class DriverDAOImpl implements DriverDAO{
 
+    private Session session;
+
     @Override
     public Driver findById(int id) {
-        Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        Transaction tx1 = session.beginTransaction();
-        Driver driver = session.get(Driver.class, id);
-        tx1.commit();
-        session.close();
-        return driver;
+        openSession();
+        return session.get(Driver.class, id);
+        //Transaction tx1 = session.beginTransaction();
+        //Driver driver = session.get(Driver.class, id);
+        //tx1.commit();
+        //session.close();
+        //return driver;
     }
 
     @Override
@@ -50,7 +53,8 @@ public class DriverDAOImpl implements DriverDAO{
 
     @Override
     public Auto findAutoById(int id) {
-        return HibernateSessionFactoryUtil.getSessionFactory().openSession().get(Auto.class, id);
+        openSession();
+        return session.get(Auto.class, id);
     }
 
     @Override
@@ -60,9 +64,23 @@ public class DriverDAOImpl implements DriverDAO{
     }
 
     @Override
+    public List<Auto> findAllAuto() {
+        List<Auto> autos = (List<Auto>)HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("From Auto").list();
+        return autos;
+    }
+
+    @Override
     public List<Driver> findByName(String name) {
-        Query query = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("From User where login =:param");
+        Query query = HibernateSessionFactoryUtil.getSessionFactory().openSession().createQuery("From Driver where name =:param");
         query.setParameter("param", name);
         return query.list();
+    }
+
+    public void openSession() {
+        session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
+    }
+
+    public void closeSessionAfterFind() {
+        session.close();
     }
 }

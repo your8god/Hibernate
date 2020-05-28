@@ -30,11 +30,17 @@ public class DriverService {
         return driverDao.findAll();
     }
 
+    public List<Auto> findAllAuto() {return driverDao.findAllAuto();}
+
     public List<Driver> findDriverByName(String name) {
         return driverDao.findByName(name);
     }
 
     public Auto findAutoById(int id) {
         return driverDao.findAutoById(id);
+    }
+
+    public void closeSessionAfterFind() {
+        driverDao.closeSessionAfterFind();
     }
 }
