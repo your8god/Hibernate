@@ -374,7 +374,7 @@ public class Session {
 
             ObjectMapper mapper = new ObjectMapper();
             StringWriter w = new StringWriter();
-            mapper.writeValue(w, drivers);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(w, drivers);
             String res = w.toString();
 
             System.out.println(res);
@@ -395,7 +395,7 @@ public class Session {
 
             ObjectMapper mapper = new ObjectMapper();
             StringWriter w = new StringWriter();
-            mapper.writeValue(w, autos);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(w, autos);
             String res = w.toString();
 
             System.out.println(res);
